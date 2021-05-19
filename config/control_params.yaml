@@ -1,0 +1,36 @@
+# ---------------------------------- #
+# Parameters of the XQuad Controller #
+# ---------------------------------- #
+
+
+# Mass
+m: 1.0 #2.7
+
+# Vector field gain
+Kp: 1.2
+
+# Velocity gains
+Kx: 0.8 #1.8
+Ky: 0.8 #1.8
+Kz: 0.8 #1.8
+
+
+# Orientation gain
+Kr: 2.8 #3.5
+
+Kz_int: 0.2
+
+# Drag coeff (-1 to disable drag)
+DRAG_COEF: 0.1
+
+# Trajectory Selection -  0 = Polynomial, 1 = Auruco Circle, 2 = Circle, 3 = Ellipse, 4 = Square
+curve_selection: 0
+
+# Ratio velocity
+RATIO: 2.2
+
+# Drone Speed: If <= 0 - polynomial planned velocity, If > 0 fixed to informed speed - ex: 1.0, 1.5, 2.0 ....
+drone_speed: 7.0 #4.0
+
+# Yaw type: 1 - Fixed yaw (front),  2 - Drone x axis aligned with the field,  Any other value - Left Pair cameras aligned with the field
+yaw_type: 2
