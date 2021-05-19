@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <!--Visual Scripts-->
+  <node pkg = "xquad_autonomous_stack" name = "gates" type = "plot_nominal_gates.py" args="">
+  </node>
+  <node pkg = "rviz" name = "rviz" type = "rviz" args="-d $(find xquad_autonomous_stack)/rviz/config_flightgoggles.rviz" output="screen">
+  </node>
+
+   
+  <!--Gate Detection-->
+  <node type="gate_detection" name="gate_detection_node" pkg="xquad_autonomous_stack">
+    <param name="loop_frequency" type="double" value="50.0"/>
+    <param name="yolo_tiny_cfg" type="string" value="$(find xquad_autonomous_stack)/config/yolov4-tiny.cfg"/>
+    <param name="yolo_tiny_weights" type="string" value="$(find xquad_autonomous_stack)/config/yolov4-tiny_best.weights"/>
+    <param name="camera_topic" type="string" value="/uav/camera/left/image_rect_color"/>
+  </node>
+
+  <!-- Aruco Detect-->
+  <node type="get_aruco" name="Aruco" pkg="xquad_autonomous_stack"/>
+
+
+  <!--Beacons PNP-->
+  <node type="check_id.py" name="RNA_pnp" pkg="xquad_autonomous_stack">
+    <param name="mlp_local" type="string" value="$(find xquad_autonomous_stack)/config/Weights_Saves/"/>
+  </node>
+
+
+  <!--EKF filter-->
+  <node pkg = "xquad_autonomous_stack" name = "EKF" type = "state_estimator" args="-r 0.02" output="screen">
+	<param name="log_path" type="string" value="$(find xquad_autonomous_stack)/log_files/" />
+	<rosparam command="load" file="$(find xquad_autonomous_stack)/config/EKF_params_drone.yaml" />
+  </node>
+
+
+  <!--Planner-->
+  <node pkg="xquad_autonomous_stack" type="trajectory_planner.py"   name="trajectory_planner" />
+
+
+  <!--Control-->
+  <param name="/field_follow/resultsFile" type="string" value="$(find xquad_autonomous_stack)/text/xquad_results.txt" />
+  <param name="/field_follow/curvesFile" type="string" value="$(find xquad_autonomous_stack)/text/coefs_info.txt" />  
+  <node pkg="xquad_autonomous_stack" type="field_controller" name="controller" args="" output="screen">
+	<rosparam command="load" file="$(find xquad_autonomous_stack)/config/control_params.yaml" />
+  </node>
+
+
+   <!-- ORBSLAM 2 -->
+  <!-- <include file="$(find orb_slam2_ros)/ros/launch/orbslam.launch" /> -->
+  <node name="orbslam_transform" pkg="xquad_autonomous_stack" type="transforms.py">
+	</node>
+
+
+
+	  
+
+</launch>
